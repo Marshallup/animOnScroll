@@ -16,14 +16,35 @@ function scrollAnimate(params) {
       windowPath: 4,
       offsetTop: false,
       repeatMode: true,
-      offOnMobile: true
+      offOnMobile: true,
+      cssAnimation: true,
     },
     params || {}
   );
 
-  if (opt.offOnMobile && /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
-      return
+  if (
+    opt.offOnMobile &&
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(
+      navigator.userAgent
+    )
+  ) {
+    return;
   }
+
+  // 📁 cache.js
+  // let cache = new WeakMap();
+
+  // // вычисляем и запоминаем результат
+  // function process(obj, res) {
+  //   if (!cache.has(obj)) {
+  //     let result = /* вычисляем результат для объекта */ res;
+
+  //     cache.set(obj, result);
+  //   }
+
+  //   return cache.get(obj);
+  // }
+
   const animClass = opt.animClass,
     animActive = opt.animActive,
     animNoRemove = opt.animNoRemove;
@@ -36,17 +57,32 @@ function scrollAnimate(params) {
           let animItem = animItems[i],
             animItemHeight = animItem.offsetHeight,
             animItemOffset = offset(animItem).top,
-            animStart = 4;
+            animStart = 4,
+            animName;
 
           let animItemPoint = window.innerHeight - animItemHeight / animStart;
           if (animItemHeight > window.innerHeight) {
             animItemPoint = window.innerHeight - window.innerHeight / animStart;
           }
+          // if (opt.cssAnimation) {
+          //   animName = getComputedStyle(animItem).animationName;
+          //   if (cache.get(animItem) !== "stop") {
+          //     process(animItem, animName);
+          //     animItem.style.animationName = "none";
+          //   }
+          // }
           if (
             pageYOffset > animItemOffset - animItemPoint &&
             pageYOffset < animItemOffset + animItemHeight
           ) {
             animItem.classList.add(animActive);
+            // if (opt.cssAnimation) {
+            //   let animCache = cache.get(animItem);
+            //   if (animCache !== "stop") {
+            //     animItem.style.animationName = cache.get(animItem);
+            //     cache.set(animItem, "stop");
+            //   }
+            // }
           } else {
             if (opt.repeatMode) {
               if (!animItem.classList.contains(animNoRemove)) {
@@ -78,6 +114,7 @@ function scrollAnimate(params) {
     }
     animOnScroll();
   }
+  console.log(cache);
 
   function offset(el) {
     const rect = el.getBoundingClientRect(),
@@ -88,7 +125,7 @@ function scrollAnimate(params) {
 }
 
 scrollAnimate({
-  windowPath: false,
-  offsetTop: 100,
+  windowPath: 4,
+  offsetTop: false,
   repeatMode: false,
 });
